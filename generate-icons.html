@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <title>生成 PWA 图标</title>
+  <style>
+    body { font-family: sans-serif; padding: 40px; text-align: center; }
+    canvas { margin: 20px; border: 1px solid #ddd; }
+    p { color: #666; margin: 8px 0; }
+    a { display: inline-block; margin: 10px; padding: 10px 20px; background: #1a73e8; color: white; text-decoration: none; border-radius: 8px; }
+  </style>
+</head>
+<body>
+  <h1>PWA 图标生成器</h1>
+  <p>右键点击下方图标，选择"图片另存为"，保存到 <code>icons/</code> 文件夹</p>
+
+  <h3>icon-192.png</h3>
+  <canvas id="c192" width="192" height="192"></canvas>
+  <br>
+  <a id="dl192" download="icon-192.png">下载 192x192</a>
+
+  <h3>icon-512.png</h3>
+  <canvas id="c512" width="512" height="512"></canvas>
+  <br>
+  <a id="dl512" download="icon-512.png">下载 512x512</a>
+
+  <script>
+    function drawIcon(canvasId) {
+      const canvas = document.getElementById(canvasId);
+      const ctx = canvas.getContext('2d');
+      const s = canvas.width;
+
+      // 背景
+      ctx.fillStyle = '#1a73e8';
+      ctx.beginPath();
+      ctx.roundRect(0, 0, s, s, s * 0.15);
+      ctx.fill();
+
+      // 文字 "记"
+      ctx.fillStyle = 'white';
+      ctx.font = `bold ${s * 0.5}px "PingFang SC", "Microsoft YaHei", sans-serif`;
+      ctx.textAlign = 'center';
+      ctx.textBaseline = 'middle';
+      ctx.fillText('记', s / 2, s / 2);
+
+      return canvas;
+    }
+
+    drawIcon('c192');
+    drawIcon('c512');
+
+    // 下载链接
+    document.getElementById('dl192').href = document.getElementById('c192').toDataURL('image/png');
+    document.getElementById('dl512').href = document.getElementById('c512').toDataURL('image/png');
+  </script>
+</body>
+</html>
