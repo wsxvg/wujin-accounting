@@ -242,12 +242,21 @@ const RecordManager = (() => {
     const container = document.getElementById('overview-content');
     const today = getTodayStr();
     const isToday = dateStr === today;
+    const dateLabel = isToday ? '今天' : formatDate(dateStr);
+
+    // 统计总商品数
+    const totalItems = records.reduce((sum, r) => sum + (r.record_items?.length || 0), 0);
+    const customerCount = new Set(records.map(r => r.customer_id)).size;
 
     if (records.length === 0) {
       container.innerHTML = `
-        <div class="empty-state">
-          <div class="icon">📋</div>
-          <p>${isToday ? '今天还没有记录' : formatDate(dateStr) + ' 没有记录'}</p>
+        <div class="overview-date-header">
+          <h2>${dateLabel}</h2>
+        </div>
+        <div class="pc-empty">
+          <div class="icon">📦</div>
+          <h3>${isToday ? '今天还没有记录' : dateLabel + '没有记录'}</h3>
+          <p>${isToday ? '等待手机端录入数据，或点击右上角管理客户' : '切换其他日期查看'}</p>
         </div>
       `;
       return;
@@ -259,15 +268,16 @@ const RecordManager = (() => {
       const customerId = record.customer_id;
       const customerName = record.customers?.name || '未知客户';
       if (!grouped[customerId]) {
-        grouped[customerId] = {
-          name: customerName,
-          records: []
-        };
+        grouped[customerId] = { name: customerName, records: [] };
       }
       grouped[customerId].records.push(record);
     });
 
     container.innerHTML = `
+      <div class="overview-date-header">
+        <h2>${dateLabel}</h2>
+        <span class="record-count">${customerCount} 位客户 · ${totalItems} 件商品</span>
+      </div>
       <div class="overview-grid">
         ${Object.entries(grouped).map(([customerId, group]) => `
           <div class="overview-card ${isToday ? 'today' : ''}">
@@ -285,7 +295,7 @@ const RecordManager = (() => {
                        data-name="${escapeHtml(item.product_name)}" data-quantity="${item.quantity}">
                     <span class="product-name">${escapeHtml(item.product_name)}</span>
                     <span class="quantity">x${item.quantity}</span>
-                    <span style="margin-left:12px;font-size:12px;color:#5f6368">${time}</span>
+                    <span style="margin-left:12px;font-size:12px;color:var(--text-muted)">${time}</span>
                   </div>
                 `).join('');
               }).join('')}

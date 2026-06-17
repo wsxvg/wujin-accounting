@@ -91,6 +91,10 @@ async function initApp() {
   // 初始化语音识别
   VoiceRecognition.init();
 
+  // 设置手机端日期副标题
+  const dateSub = document.getElementById('today-date-mobile');
+  if (dateSub) dateSub.textContent = formatDate(getTodayStr());
+
   // 根据设备类型显示不同界面
   if (isMobile()) {
     showPage('page-customers');

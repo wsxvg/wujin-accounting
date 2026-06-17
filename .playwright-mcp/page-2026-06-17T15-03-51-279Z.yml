@@ -1,0 +1,18 @@
+- generic [ref=e2]:
+  - banner [ref=e3]:
+    - generic [ref=e5]:
+      - generic [ref=e6]: 记
+      - generic [ref=e7]:
+        - generic [ref=e8]: 五金记账
+        - generic [ref=e9]: 记录管理系统
+    - generic [ref=e10]:
+      - textbox [ref=e11]: 2026-06-17
+      - button "管理客户" [ref=e12] [cursor=pointer]:
+        - img [ref=e13]
+        - text: 管理客户
+  - generic [ref=e18]:
+    - heading "今天" [level=2] [ref=e23]
+    - generic [ref=e24]:
+      - generic [ref=e25]: 📦
+      - heading "今天还没有记录" [level=3] [ref=e26]
+      - paragraph [ref=e27]: 等待手机端录入数据，或点击右上角管理客户
