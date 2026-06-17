@@ -596,7 +596,11 @@ body {
 }
 
 .add-customer-form {
-  display: flex; gap: 10px; align-items: center;
+  display: flex; flex-direction: column; gap: 10px;
+}
+
+.add-customer-form .form-row {
+  display: flex; gap: 10px;
 }
 
 .add-customer-form input {
@@ -609,7 +613,9 @@ body {
 
 .add-customer-form input:focus { border-color: var(--primary); box-shadow: 0 0 0 3px var(--primary-glow); }
 
-.add-customer-form .btn-primary { height: 42px; padding: 0 20px; font-size: 14px; }
+.add-customer-form .btn-primary {
+  width: 100%; height: 44px; font-size: 15px;
+}
 
 /* ====== 响应式 ====== */
 @media (min-width: 768px) {
