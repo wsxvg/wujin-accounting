@@ -55,7 +55,7 @@ const RecordManager = (() => {
               <div class="record-item" data-item-id="${item.id}" data-record-id="${record.id}"
                    data-name="${escapeHtml(item.product_name)}" data-quantity="${item.quantity}">
                 <span class="product-name">${escapeHtml(item.product_name)}</span>
-                <span class="quantity">x${item.quantity}</span>
+                <span class="quantity">${formatQty(item.quantity)}</span>
               </div>
             `).join('')}
             <div class="add-item-row" data-record-id="${record.id}">
@@ -294,7 +294,7 @@ const RecordManager = (() => {
                        data-item-id="${item.id}" data-record-id="${record.id}"
                        data-name="${escapeHtml(item.product_name)}" data-quantity="${item.quantity}">
                     <span class="product-name">${escapeHtml(item.product_name)}</span>
-                    <span class="quantity">x${item.quantity}</span>
+                    <span class="quantity">${formatQty(item.quantity)}</span>
                     <span style="margin-left:12px;font-size:12px;color:var(--text-muted)">${time}</span>
                   </div>
                 `).join('');

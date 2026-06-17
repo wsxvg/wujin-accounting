@@ -144,3 +144,11 @@ function formatDate(dateStr) {
   const weekdays = ['日', '一', '二', '三', '四', '五', '六'];
   return `${d.getMonth() + 1}月${d.getDate()}日 周${weekdays[d.getDay()]}`;
 }
+
+// 格式化数量：整数不显示小数点，小数保留一位
+function formatQty(num) {
+  const n = parseFloat(num);
+  if (isNaN(n)) return num;
+  // 整数直接返回，否则保留一位小数
+  return n % 1 === 0 ? n.toString() : n.toFixed(1);
+}
