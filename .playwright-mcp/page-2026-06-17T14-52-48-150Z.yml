@@ -1,0 +1,10 @@
+- generic [ref=e2]:
+  - banner [ref=e3]:
+    - heading "五金记账" [level=1] [ref=e4]
+    - button "添加客户" [ref=e5] [cursor=pointer]:
+      - img [ref=e6]
+  - generic [ref=e7]:
+    - textbox "搜索客户..." [ref=e8]
+    - button "语音搜索" [ref=e9] [cursor=pointer]:
+      - img [ref=e10]
+  - generic [ref=e14]: 加载中...
