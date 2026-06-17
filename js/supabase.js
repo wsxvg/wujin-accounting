@@ -1,7 +1,7 @@
 // Supabase 连接配置
 // ⚠️ 需要替换为你的 Supabase anon public key（在 Supabase Dashboard → Settings → API 中获取）
 const SUPABASE_URL = 'https://vyeimyuwsrvywlolxkye.supabase.co';
-const SUPABASE_ANON_KEY = 'YOUR_ANON_KEY_HERE'; // TODO: 替换为 anon key
+const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InZ5ZWlteXV3c3J2eXdsb2x4a3llIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODExNjcwMDAsImV4cCI6MjA5Njc0MzAwMH0.qU8Tos1RxqwKADU8Tp9pJna2W4MEZb0_sZ_guQRLHiM';
 
 let supabase = null;
 
@@ -80,7 +80,7 @@ const db = {
         record_items (*)
       `)
       .eq('customer_id', customerId)
-      .eq('date', dateStr)
+      .eq('record_date', dateStr)
       .order('created_at', { ascending: true });
     if (error) throw error;
     return data || [];
@@ -95,7 +95,7 @@ const db = {
         record_items (*),
         customers (id, name)
       `)
-      .eq('date', dateStr)
+      .eq('record_date', dateStr)
       .order('created_at', { ascending: true });
     if (error) throw error;
     return data || [];
@@ -110,9 +110,9 @@ const db = {
         record_items (*),
         customers (id, name)
       `)
-      .gte('date', startDate)
-      .lte('date', endDate)
-      .order('date', { ascending: false })
+      .gte('record_date', startDate)
+      .lte('record_date', endDate)
+      .order('record_date', { ascending: false })
       .order('created_at', { ascending: true });
     if (error) throw error;
     return data || [];
@@ -124,7 +124,7 @@ const db = {
       .from('records')
       .insert({
         customer_id: customerId,
-        date: dateStr
+        record_date: dateStr
       })
       .select()
       .single();
@@ -184,7 +184,7 @@ const db = {
     const { data, error } = await supabase
       .from('records')
       .select('customer_id')
-      .eq('date', today);
+      .eq('record_date', today);
     if (error) throw error;
     return [...new Set((data || []).map(r => r.customer_id))];
   }
