@@ -239,14 +239,23 @@ async function initApp() {
     }
   });
 
-  // 单位选择器按钮点击事件
+  // 单位选择器：预设按钮点击清除自定义输入，自定义输入清除预设选中
   document.querySelectorAll('.unit-selector').forEach(selector => {
+    const customInput = selector.querySelector('.unit-custom-input');
     selector.querySelectorAll('.unit-btn').forEach(btn => {
       btn.addEventListener('click', () => {
         selector.querySelectorAll('.unit-btn').forEach(b => b.classList.remove('active'));
         btn.classList.add('active');
+        if (customInput) customInput.value = '';
       });
     });
+    if (customInput) {
+      customInput.addEventListener('input', () => {
+        if (customInput.value.trim()) {
+          selector.querySelectorAll('.unit-btn').forEach(b => b.classList.remove('active'));
+        }
+      });
+    }
   });
 
   // 窗口大小变化时切换界面

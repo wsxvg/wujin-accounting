@@ -116,6 +116,8 @@ const RecordManager = (() => {
     document.querySelectorAll('#input-unit-selector .unit-btn').forEach(btn => {
       btn.classList.toggle('active', btn.dataset.unit === '个');
     });
+    const customInput = document.getElementById('input-unit-custom');
+    if (customInput) customInput.value = '';
     document.getElementById('modal-add-item').classList.remove('hidden');
     document.getElementById('input-product-name').focus();
   }
@@ -125,10 +127,15 @@ const RecordManager = (() => {
     document.getElementById('edit-product-name').value = name;
     document.getElementById('edit-quantity').value = quantity;
     // 设置单位选中状态
+    const effectiveUnit = unit || '个';
+    const presetUnits = ['个', '公斤', '米', '箱'];
+    const isPreset = presetUnits.includes(effectiveUnit);
     const unitBtns = document.querySelectorAll('#edit-unit-selector .unit-btn');
     unitBtns.forEach(btn => {
-      btn.classList.toggle('active', btn.dataset.unit === (unit || '个'));
+      btn.classList.toggle('active', isPreset && btn.dataset.unit === effectiveUnit);
     });
+    const customInput = document.getElementById('edit-unit-custom');
+    if (customInput) customInput.value = isPreset ? '' : effectiveUnit;
     document.getElementById('modal-edit-item').classList.remove('hidden');
   }
 
@@ -138,7 +145,8 @@ const RecordManager = (() => {
     const qtyInput = document.getElementById('input-quantity');
     const name = nameInput.value.trim();
     const qty = qtyInput.value;
-    const unit = document.querySelector('#input-unit-selector .unit-btn.active')?.dataset.unit || '个';
+    const customUnit = document.getElementById('input-unit-custom')?.value.trim();
+    const unit = customUnit || document.querySelector('#input-unit-selector .unit-btn.active')?.dataset.unit || '个';
 
     if (!name) {
       showToast('请输入商品名称', true);
@@ -182,7 +190,8 @@ const RecordManager = (() => {
     }
 
     try {
-      const unit = document.querySelector('#edit-unit-selector .unit-btn.active')?.dataset.unit || '个';
+      const customUnit = document.getElementById('edit-unit-custom')?.value.trim();
+      const unit = customUnit || document.querySelector('#edit-unit-selector .unit-btn.active')?.dataset.unit || '个';
       await db.updateItem(editingItemId, {
         product_name: name,
         quantity: parseFloat(qty),
