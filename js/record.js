@@ -53,9 +53,9 @@ const RecordManager = (() => {
           <div class="record-items">
             ${items.map(item => `
               <div class="record-item" data-item-id="${item.id}" data-record-id="${record.id}"
-                   data-name="${escapeHtml(item.product_name)}" data-quantity="${item.quantity}">
+                   data-name="${escapeHtml(item.product_name)}" data-quantity="${item.quantity}" data-unit="${item.unit || '个'}">
                 <span class="product-name">${escapeHtml(item.product_name)}</span>
-                <span class="quantity">${formatQty(item.quantity)}</span>
+                <span class="quantity">${formatQty(item.quantity, item.unit)}</span>
               </div>
             `).join('')}
             <div class="add-item-row" data-record-id="${record.id}">
@@ -75,7 +75,7 @@ const RecordManager = (() => {
       el.addEventListener('click', () => {
         editingItemId = el.dataset.itemId;
         editingRecordId = el.dataset.recordId;
-        openEditItemModal(el.dataset.name, el.dataset.quantity);
+        openEditItemModal(el.dataset.name, el.dataset.quantity, el.dataset.unit);
       });
     });
 
@@ -112,14 +112,23 @@ const RecordManager = (() => {
   function openAddItemModal() {
     document.getElementById('input-product-name').value = '';
     document.getElementById('input-quantity').value = '';
+    // 重置单位为"个"
+    document.querySelectorAll('#input-unit-selector .unit-btn').forEach(btn => {
+      btn.classList.toggle('active', btn.dataset.unit === '个');
+    });
     document.getElementById('modal-add-item').classList.remove('hidden');
     document.getElementById('input-product-name').focus();
   }
 
   // 打开编辑商品弹窗
-  function openEditItemModal(name, quantity) {
+  function openEditItemModal(name, quantity, unit) {
     document.getElementById('edit-product-name').value = name;
     document.getElementById('edit-quantity').value = quantity;
+    // 设置单位选中状态
+    const unitBtns = document.querySelectorAll('#edit-unit-selector .unit-btn');
+    unitBtns.forEach(btn => {
+      btn.classList.toggle('active', btn.dataset.unit === (unit || '个'));
+    });
     document.getElementById('modal-edit-item').classList.remove('hidden');
   }
 
@@ -129,6 +138,7 @@ const RecordManager = (() => {
     const qtyInput = document.getElementById('input-quantity');
     const name = nameInput.value.trim();
     const qty = qtyInput.value;
+    const unit = document.querySelector('#input-unit-selector .unit-btn.active')?.dataset.unit || '个';
 
     if (!name) {
       showToast('请输入商品名称', true);
@@ -140,7 +150,7 @@ const RecordManager = (() => {
     }
 
     try {
-      await db.addItem(editingRecordId, name, qty);
+      await db.addItem(editingRecordId, name, qty, unit);
       showToast('商品已添加');
       document.getElementById('modal-add-item').classList.add('hidden');
 
@@ -172,9 +182,11 @@ const RecordManager = (() => {
     }
 
     try {
+      const unit = document.querySelector('#edit-unit-selector .unit-btn.active')?.dataset.unit || '个';
       await db.updateItem(editingItemId, {
         product_name: name,
-        quantity: parseFloat(qty)
+        quantity: parseFloat(qty),
+        unit: unit
       });
       showToast('已保存');
       document.getElementById('modal-edit-item').classList.add('hidden');
@@ -292,9 +304,9 @@ const RecordManager = (() => {
                 return items.map(item => `
                   <div class="overview-item"
                        data-item-id="${item.id}" data-record-id="${record.id}"
-                       data-name="${escapeHtml(item.product_name)}" data-quantity="${item.quantity}">
+                       data-name="${escapeHtml(item.product_name)}" data-quantity="${item.quantity}" data-unit="${item.unit || '个'}">
                     <span class="product-name">${escapeHtml(item.product_name)}</span>
-                    <span class="quantity">${formatQty(item.quantity)}</span>
+                    <span class="quantity">${formatQty(item.quantity, item.unit)}</span>
                     <span style="margin-left:12px;font-size:12px;color:var(--text-muted)">${time}</span>
                   </div>
                 `).join('');
@@ -313,7 +325,7 @@ const RecordManager = (() => {
       el.addEventListener('click', () => {
         editingItemId = el.dataset.itemId;
         editingRecordId = el.dataset.recordId;
-        openEditItemModal(el.dataset.name, el.dataset.quantity);
+        openEditItemModal(el.dataset.name, el.dataset.quantity, el.dataset.unit);
       });
     });
   }

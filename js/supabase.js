@@ -98,10 +98,10 @@ const db = {
     if (error) throw error;
   },
 
-  async addItem(recordId, productName, quantity) {
+  async addItem(recordId, productName, quantity, unit = '个') {
     const { data, error } = await sbClient
       .from('record_items')
-      .insert({ record_id: recordId, product_name: productName.trim(), quantity: parseFloat(quantity) })
+      .insert({ record_id: recordId, product_name: productName.trim(), quantity: parseFloat(quantity), unit: unit })
       .select().single();
     if (error) throw error;
     return data;
@@ -145,10 +145,10 @@ function formatDate(dateStr) {
   return `${d.getMonth() + 1}月${d.getDate()}日 周${weekdays[d.getDay()]}`;
 }
 
-// 格式化数量：整数不显示小数点，小数保留一位
-function formatQty(num) {
+// 格式化数量+单位：如 "50个" "3.5公斤"
+function formatQty(num, unit) {
   const n = parseFloat(num);
   if (isNaN(n)) return num;
-  // 整数直接返回，否则保留一位小数
-  return n % 1 === 0 ? n.toString() : n.toFixed(1);
+  const qtyStr = n % 1 === 0 ? n.toString() : n.toFixed(1);
+  return unit && unit !== '个' ? `${qtyStr}${unit}` : qtyStr;
 }

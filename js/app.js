@@ -239,6 +239,16 @@ async function initApp() {
     }
   });
 
+  // 单位选择器按钮点击事件
+  document.querySelectorAll('.unit-selector').forEach(selector => {
+    selector.querySelectorAll('.unit-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        selector.querySelectorAll('.unit-btn').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+      });
+    });
+  });
+
   // 窗口大小变化时切换界面
   let resizeTimer;
   window.addEventListener('resize', () => {

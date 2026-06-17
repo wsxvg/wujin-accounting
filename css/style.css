@@ -319,6 +319,30 @@ body {
 .input-with-mic input { flex: 1; }
 .input-with-mic .btn-mic { width: 48px; height: 48px; }
 
+/* 单位选择器 */
+.unit-selector { display: flex; gap: 8px; }
+
+.unit-btn {
+  flex: 1; height: 44px;
+  border: 1.5px solid var(--border);
+  background: var(--bg);
+  border-radius: var(--radius-sm);
+  font-size: 15px; font-weight: 600;
+  font-family: var(--font);
+  color: var(--text-secondary);
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.unit-btn:active { transform: scale(0.95); }
+
+.unit-btn.active {
+  border-color: var(--primary);
+  background: var(--primary-light);
+  color: var(--primary);
+  box-shadow: 0 0 0 2px var(--primary-glow);
+}
+
 /* ====== 按钮 ====== */
 .btn-primary {
   height: 48px; padding: 0 24px;
