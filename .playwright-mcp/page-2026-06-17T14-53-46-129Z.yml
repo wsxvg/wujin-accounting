@@ -1,7 +1,0 @@
-- generic [ref=e2]:
-  - banner [ref=e3]:
-    - heading "五金记账 - 记录管理" [level=1] [ref=e4]
-    - generic [ref=e5]:
-      - button "管理客户" [ref=e6] [cursor=pointer]
-      - textbox [ref=e7]: 2026-06-17
-  - generic [ref=e9]: 加载中...
