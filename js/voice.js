@@ -6,13 +6,12 @@ const VoiceRecognition = (() => {
   let isRecording = false;
   let currentCallback = null;
   let currentBtn = null;
+  let hasEnded = false; // 防止 onend/onerror 重复触发
 
-  // 检查浏览器是否支持
   function isSupported() {
     return 'webkitSpeechRecognition' in window || 'SpeechRecognition' in window;
   }
 
-  // 初始化
   function init() {
     if (!isSupported()) {
       console.warn('当前浏览器不支持语音识别');
@@ -36,25 +35,46 @@ const VoiceRecognition = (() => {
 
     recognition.onerror = (event) => {
       console.error('语音识别错误:', event.error);
-      stopRecording();
-      if (event.error === 'not-allowed') {
-        showToast('请允许使用麦克风权限', true);
-      } else if (event.error === 'no-speech') {
-        showToast('没有检测到语音，请重试', true);
-      } else {
-        showToast('语音识别失败，请重试', true);
+      if (hasEnded) return;
+      hasEnded = true;
+
+      // 根据错误类型显示不同提示
+      switch (event.error) {
+        case 'not-allowed':
+          showToast('请在iPhone设置中允许麦克风权限', true);
+          break;
+        case 'network':
+          showToast('网络连接失败，请检查网络', true);
+          break;
+        case 'no-speech':
+          showToast('没有检测到语音，请靠近手机再说一次', true);
+          break;
+        case 'audio-capture':
+          showToast('没有找到麦克风，请检查设备', true);
+          break;
+        case 'service-not-allowed':
+          showToast('语音服务不可用，请检查Siri设置', true);
+          break;
+        case 'aborted':
+          // 用户主动取消，不显示错误
+          break;
+        default:
+          showToast(`语音识别出错：${event.error}`, true);
       }
+
+      stopRecording();
     };
 
     recognition.onend = () => {
+      if (hasEnded) return;
+      hasEnded = true;
       stopRecording();
     };
 
     return true;
   }
 
-  // 开始录音
-  function startRecording(callback, btnElement) {
+  async function startRecording(callback, btnElement) {
     if (!recognition) {
       if (!init()) {
         showToast('您的浏览器不支持语音识别', true);
@@ -62,32 +82,41 @@ const VoiceRecognition = (() => {
       }
     }
 
-    // 如果正在录音，先停止
     if (isRecording) {
       stopRecording();
       return;
     }
 
+    // iOS Safari: 需要先请求麦克风权限
+    try {
+      const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+      stream.getTracks().forEach(t => t.stop()); // 立即释放，只是测试权限
+    } catch (e) {
+      console.error('麦克风权限被拒绝:', e);
+      showToast('请在浏览器弹窗中允许使用麦克风', true);
+      return;
+    }
+
     currentCallback = callback;
     currentBtn = btnElement;
+    hasEnded = false;
 
     try {
       recognition.start();
       isRecording = true;
 
-      // 更新按钮状态
       if (currentBtn) {
         currentBtn.classList.add('recording');
       }
 
-      showToast('正在听...');
+      showToast('正在听，请说话...');
     } catch (e) {
       console.error('启动语音识别失败:', e);
-      showToast('语音识别启动失败，请重试', true);
+      showToast('启动失败，请重试', true);
+      stopRecording();
     }
   }
 
-  // 停止录音
   function stopRecording() {
     if (recognition && isRecording) {
       try {
