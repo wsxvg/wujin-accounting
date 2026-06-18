@@ -79,6 +79,20 @@
       </button>
     </header>
 
+    <!-- 批量录入区域（staging） -->
+    <div id="staging-area" class="staging-area hidden">
+      <div class="staging-header">
+        <span class="staging-title">📋 新建记录</span>
+        <span class="staging-count" id="staging-count">0 件商品</span>
+      </div>
+      <div id="staging-list" class="staging-list"></div>
+      <div class="staging-actions">
+        <button id="btn-add-staging-item" class="btn-staging-add">+ 添加商品</button>
+        <button id="btn-confirm-record" class="btn-primary btn-block">✓ 确认创建记录</button>
+        <button id="btn-cancel-record" class="btn-staging-cancel">取消</button>
+      </div>
+    </div>
+
     <div id="record-list" class="record-list">
       <div class="loading">
         <div class="loading-spinner"></div>

@@ -106,7 +106,7 @@ async function initApp() {
 
   // iPhone: 返回按钮
   document.getElementById('btn-back')?.addEventListener('click', () => {
-    showPage('page-customers');
+    RecordManager.handleBack();
   });
 
   // iPhone: 添加客户按钮
@@ -157,9 +157,24 @@ async function initApp() {
     }, btn);
   });
 
-  // iPhone: 新建记录
+  // iPhone: 新建记录（进入 staging 模式）
   document.getElementById('btn-new-record')?.addEventListener('click', () => {
     RecordManager.createNewRecord();
+  });
+
+  // iPhone: staging - 添加商品
+  document.getElementById('btn-add-staging-item')?.addEventListener('click', () => {
+    RecordManager.addStagingItem();
+  });
+
+  // iPhone: staging - 确认创建记录
+  document.getElementById('btn-confirm-record')?.addEventListener('click', () => {
+    RecordManager.confirmNewRecord();
+  });
+
+  // iPhone: staging - 取消
+  document.getElementById('btn-cancel-record')?.addEventListener('click', () => {
+    RecordManager.cancelNewRecord();
   });
 
   // iPhone: 删除客户
