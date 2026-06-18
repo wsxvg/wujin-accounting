@@ -135,26 +135,24 @@ async function initApp() {
   // iPhone: 语音搜索
   document.getElementById('btn-voice-search')?.addEventListener('click', () => {
     const btn = document.getElementById('btn-voice-search');
+    const input = document.getElementById('search-input');
     VoiceRecognition.startRecording((transcript) => {
-      document.getElementById('search-input').value = transcript;
       CustomerManager.renderCustomerList(transcript);
-    }, btn);
+    }, btn, input);
   });
 
   // iPhone: 语音输入商品名
   document.getElementById('btn-voice-product')?.addEventListener('click', () => {
     const btn = document.getElementById('btn-voice-product');
-    VoiceRecognition.startRecording((transcript) => {
-      document.getElementById('input-product-name').value = transcript;
-    }, btn);
+    const input = document.getElementById('input-product-name');
+    VoiceRecognition.startRecording(() => {}, btn, input);
   });
 
   // iPhone: 语音输入客户名
   document.getElementById('btn-voice-customer')?.addEventListener('click', () => {
     const btn = document.getElementById('btn-voice-customer');
-    VoiceRecognition.startRecording((transcript) => {
-      document.getElementById('input-customer-name').value = transcript;
-    }, btn);
+    const input = document.getElementById('input-customer-name');
+    VoiceRecognition.startRecording(() => {}, btn, input);
   });
 
   // iPhone: 新建记录（进入 staging 模式）

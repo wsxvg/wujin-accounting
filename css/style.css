@@ -739,3 +739,15 @@ body {
 ::-webkit-scrollbar-thumb:hover { background: var(--text-muted); }
 
 ::selection { background: var(--primary-glow); }
+
+/* 语音识别中的输入框 */
+input.voice-active {
+  border-color: var(--danger) !important;
+  box-shadow: 0 0 0 3px rgba(230, 57, 70, 0.15) !important;
+  animation: voice-glow 1.5s ease infinite;
+}
+
+@keyframes voice-glow {
+  0%, 100% { box-shadow: 0 0 0 3px rgba(230, 57, 70, 0.15); }
+  50% { box-shadow: 0 0 0 6px rgba(230, 57, 70, 0.08); }
+}
