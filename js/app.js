@@ -89,7 +89,7 @@ async function initApp() {
   }
 
   // 初始化语音识别
-  VoiceRecognition.init();
+  // 语音识别模块已自动初始化，无需手动调用
 
   // 设置手机端日期副标题
   const dateSub = document.getElementById('today-date-mobile');
