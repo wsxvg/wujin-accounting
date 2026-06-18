@@ -209,6 +209,19 @@ body {
   box-shadow: var(--shadow-xs);
 }
 
+.record-card-actions { display: flex; align-items: center; gap: 8px; }
+
+.record-delete-btn {
+  width: 28px; height: 28px;
+  background: transparent; border: none;
+  font-size: 14px; cursor: pointer;
+  border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  opacity: 0.5; transition: all 0.15s ease;
+}
+
+.record-delete-btn:active { opacity: 1; background: var(--danger-light); transform: scale(1.1); }
+
 .record-items { padding: 0; }
 
 .record-item {
@@ -643,6 +656,13 @@ body {
 }
 
 .overview-card-footer button:hover { border-color: var(--primary); background: var(--primary-light); }
+
+.btn-overview-delete {
+  color: var(--danger) !important;
+  border-color: rgba(230, 57, 70, 0.3) !important;
+}
+
+.btn-overview-delete:hover { background: var(--danger-light) !important; }
 
 /* PC 空状态 */
 .pc-empty {

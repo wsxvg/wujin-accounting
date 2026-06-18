@@ -53,9 +53,12 @@ const RecordManager = (() => {
 
       return `
         <div class="record-card" data-record-id="${record.id}">
-          <div class="record-card-header">
+          <div class="record-card-header" data-record-id="${record.id}" data-count="${items.length}">
             <span class="time">🕐 ${time}</span>
-            <span class="item-count">${items.length} 件商品</span>
+            <div class="record-card-actions">
+              <span class="item-count">${items.length} 件商品</span>
+              <button class="record-delete-btn" data-record-id="${record.id}" data-count="${items.length}" aria-label="删除记录" title="删除整条记录">🗑️</button>
+            </div>
           </div>
           <div class="record-items">
             ${items.map(item => `
@@ -91,6 +94,14 @@ const RecordManager = (() => {
       el.addEventListener('click', () => {
         editingRecordId = el.dataset.recordId;
         openAddItemModal();
+      });
+    });
+
+    // 绑定"删除整条记录"按钮
+    container.querySelectorAll('.record-delete-btn').forEach(btn => {
+      btn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        deleteRecord(btn.dataset.recordId, parseInt(btn.dataset.count));
       });
     });
   }
@@ -354,6 +365,24 @@ const RecordManager = (() => {
     }
   }
 
+  // 删除整条记录
+  async function deleteRecord(recordId, itemCount) {
+    if (!confirm(`确定要删除这条记录吗？\n包含 ${itemCount} 件商品，删除后无法恢复。`)) return;
+
+    try {
+      await db.deleteRecord(recordId);
+      showToast('记录已删除');
+
+      const today = getTodayStr();
+      currentRecords = await db.getRecordsByDate(currentCustomerId, today);
+      renderRecordList();
+      CustomerManager.loadCustomers();
+    } catch (e) {
+      console.error('删除记录失败:', e);
+      showToast('删除失败', true);
+    }
+  }
+
   // 删除客户
   async function deleteCustomer() {
     if (!confirm(`确定要删除客户"${currentCustomerName}"吗？\n该客户的所有记录也会被删除。`)) return;
@@ -446,6 +475,7 @@ const RecordManager = (() => {
             </div>
             <div class="overview-card-footer">
               <button onclick="RecordManager.pcAddItem('${customerId}', '${escapeHtml(group.name)}')">+ 添加商品</button>
+              <button class="btn-overview-delete" onclick="RecordManager.pcDeleteRecords('${customerId}', '${escapeHtml(group.name)}')">🗑️ 删除</button>
             </div>
           </div>
         `).join('')}
@@ -459,6 +489,28 @@ const RecordManager = (() => {
         openEditItemModal(el.dataset.name, el.dataset.quantity, el.dataset.unit);
       });
     });
+  }
+
+  // PC 端删除某客户今天的所有记录
+  async function pcDeleteRecords(customerId, customerName) {
+    const today = getTodayStr();
+    const records = await db.getRecordsByDate(customerId, today);
+    if (records.length === 0) return;
+
+    const totalItems = records.reduce((sum, r) => sum + (r.record_items?.length || 0), 0);
+    if (!confirm(`确定要删除 ${customerName} 今天的全部记录吗？\n共 ${records.length} 条记录、${totalItems} 件商品。`)) return;
+
+    try {
+      for (const record of records) {
+        await db.deleteRecord(record.id);
+      }
+      showToast(`已删除 ${customerName} 的全部记录`);
+      loadOverview(today);
+      CustomerManager.loadCustomers();
+    } catch (e) {
+      console.error('删除失败:', e);
+      showToast('删除失败', true);
+    }
   }
 
   async function pcAddItem(customerId, customerName) {
@@ -492,9 +544,11 @@ const RecordManager = (() => {
     confirmAddItem,
     saveEdit,
     deleteItem,
+    deleteRecord,
     deleteCustomer,
     loadOverview,
     pcAddItem,
+    pcDeleteRecords,
     openAddItemModal,
     openEditItemModal
   };
